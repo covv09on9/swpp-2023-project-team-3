@@ -14,7 +14,7 @@ app = Flask(__name__)
 fclip = ClipTextEmbedding()
 gpt = GPT()
 
-async def post_log(sendDict):
+def post_log(sendDict):
     response = requests.post("http://3.34.1.54/history/search-record/", data=sendDict)
     return response
     
@@ -63,9 +63,9 @@ def predict():
         sendDict["user"] = user_id
         sendDict = json.dumps(sendDict)
         print(sendDict)
-        loop = asyncio.get_event_loop()
-        response = loop.run_until_complete(post_log(sendDict))
-
+        # loop = asyncio.get_event_loop()
+        # response = loop.run_until_complete(post_log(sendDict))
+        response = post_log(sendDict)
 
         print(response.json())
         
