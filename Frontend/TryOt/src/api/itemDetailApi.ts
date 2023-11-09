@@ -9,6 +9,7 @@ export const fetchFashionItemDetails = async (
   itemId: string,
 ): Promise<FashionItem> => {
   try {
+    console.log("Calling fetchFashionItemDetails for itemId: " + itemId)
     const response = await axios.get(`${BASE_URL}/${itemId}`);
     const itemData = response.data;
     return {

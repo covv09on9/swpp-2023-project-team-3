@@ -42,7 +42,7 @@ function Catalog({
     ItemSimilarityDictionary[]
   >([]);
   const [sortedIds, setSortedIds] = useState<string[]>(['']);
-
+  const [isFirstEnd, setIsFirstEnd] = useState<boolean>(true);
   //refine modal
   const [refineModalVisible, setLogoutModalVisible] = useState(false);
   const showRefineModal = () => setLogoutModalVisible(true);
@@ -62,6 +62,7 @@ function Catalog({
       setItemDataArray(() => {
         return [userQueryIds, gpt1Ids, gpt2Ids, gpt3Ids];
       });
+      setIsFirstEnd(false);
     } catch (error) {
       console.error('Error fetching id data:', error);
     }
@@ -129,9 +130,7 @@ function Catalog({
     }
 
     try {
-      await fetchItemIds();
-      mergeAndSortItemIds();
-      await fetchItemDetails();
+      await fetchItemIds()
     } catch (error) {
       console.log(error);
     }
@@ -150,6 +149,19 @@ function Catalog({
     console.log('------Catalog is rendered------');
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (itemDataArray.length != 0) {
+      console.log("Updated itemDataArray:", itemDataArray);
+      mergeAndSortItemIds();
+    }
+  }, [itemDataArray]);
+
+  useEffect(() => {
+    if (sortedIds.length !=0) {
+      fetchItemDetails();
+    }
+  }, [sortedIds]);
 
   const navigateToItemDetail = (item: FashionItem) => {
     // @ts-ignore
@@ -205,7 +217,9 @@ function Catalog({
           contentContainerStyle={styles.catalogGrid}
           onEndReached={() => {
             setPage(prevPage => prevPage + 1);
-            fetchItemDetails();
+            // if (!isFirstEnd) {
+            //   fetchItemDetails();
+            // }
           }}
           onEndReachedThreshold={0.1}
           ListFooterComponent={loading ? <ActivityIndicator /> : null}
